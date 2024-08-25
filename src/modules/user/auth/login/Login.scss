@@ -1,0 +1,23 @@
+.login {
+  width: 40%;
+  margin: 50px 30% 10px 30%;
+  h1 {
+    text-align: center;
+    margin: 20px 0;
+  }
+  .input {
+    margin: 10px 0;
+  }
+  .button {
+    text-align: center;
+  }
+  .infoLogin {
+    text-align: center;
+    margin-top: 10px;
+    label {
+      color: blue;
+      font-size: 12px;
+      cursor: pointer;
+    }
+  }
+}

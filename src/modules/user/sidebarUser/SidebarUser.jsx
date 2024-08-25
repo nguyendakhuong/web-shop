@@ -3,8 +3,6 @@ import { Link, useLocation, useNavigate } from "react-router-dom"
 import UserContext from "../../../lib/context/use.context"
 import './SidebarUser.scss'
 const SidebarUser = ({ sidebarUser }) => {
-    console.log("aaaaaaaaaaaaaaaaaaaa", sidebarUser)
-
     const [activeIndex, setActiveIndex] = useState(0)
     const location = useLocation()
     const [{ }, dispatch] = useContext(UserContext)
@@ -29,6 +27,7 @@ const SidebarUser = ({ sidebarUser }) => {
                         <div className="sidebar__menu__item__txt">{nav.text}</div>
                     </Link>
                 ))}
+
             </div>
         </div>
     )
