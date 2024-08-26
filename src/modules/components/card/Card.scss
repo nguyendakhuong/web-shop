@@ -34,14 +34,10 @@
   opacity: 1;
 }
 
-.image-container:hover .main-image {
-  opacity: 0;
-}
-
-.image-icon {
+.image-button {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 10px;
+  right: 10px;
   width: 20px;
   height: 20px;
   cursor: pointer;
@@ -75,7 +71,7 @@
   transition: all 0.3s ease;
 }
 
-.image-container:hover .button-group {
+.card-container:hover .button-group {
   bottom: 10px;
   opacity: 1;
 }
@@ -90,7 +86,22 @@
   font-size: 12px;
 }
 
-.price-container,
+.price-container {
+  display: flex;
+  align-items: center;
+  margin: 5px 0;
+  .price {
+    color: red;
+    font-size: 16px;
+  }
+  .priceOld {
+    color: dimgray;
+    font-size: 12px;
+    margin: 0 5px;
+    text-decoration: line-through;
+  }
+}
+
 .color-options {
   margin-top: 10px;
   font-size: 14px;
@@ -102,8 +113,8 @@
 }
 
 .color-button {
-  width: 30px;
-  height: 30px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   border: none;
   cursor: pointer;

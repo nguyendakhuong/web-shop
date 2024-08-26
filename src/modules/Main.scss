@@ -15,6 +15,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  .logoWeb {
+    cursor: pointer;
+    opacity: 0.7;
+  }
 }
 .body {
   min-height: 50rem;

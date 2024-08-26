@@ -8,6 +8,9 @@ import Sale from "../modules/user/sale/Sale";
 import FlatRate from "../modules/user/flatRate/FlatRate";
 import Collection from "../modules/user/collection/Collection";
 import StoreSystem from "../modules/user/storeSystem/StoreSystem";
+import LayoutAdmin from "../modules/admin/layout/LayoutAdmin";
+import Admin from "../modules/admin/home/HomeAdmin";
+import ProductAdmin from "../modules/admin/product/ProductAdmin";
 
 const AppRoute = (role, isAuth) => {
   const route = [
@@ -43,6 +46,17 @@ const AppRoute = (role, isAuth) => {
         {
           path: "StoreSystem",
           element: <StoreSystem />,
+        },
+      ],
+    },
+    {
+      path: "/admin",
+      element: <LayoutAdmin />,
+      children: [
+        { index: true, element: <Admin /> },
+        {
+          path: "product",
+          element: <ProductAdmin />,
         },
       ],
     },

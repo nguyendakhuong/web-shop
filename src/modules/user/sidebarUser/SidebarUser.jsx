@@ -16,7 +16,7 @@ const SidebarUser = ({ sidebarUser }) => {
 
     }, [location])
     return (
-        <div className="sidebar">
+        <div className="sidebarUser">
             <div className="sidebar__menu">
                 {sidebarUser.map((nav, index) => (
                     <Link

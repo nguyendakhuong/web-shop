@@ -2,8 +2,6 @@ import { useState } from 'react';
 import APP_IMAGE from '../../../assets'
 import './Card.scss'
 
-
-
 const Card = ({ product }) => {
     const [selectedColor, setSelectedColor] = useState(product.productSizeColor[0]);
     const [currentImage, setCurrentImage] = useState(selectedColor.image[0].image1);
@@ -12,11 +10,22 @@ const Card = ({ product }) => {
         setSelectedColor(color);
         setCurrentImage(color.image[0].image1);
     };
+
+    const handleMouseEnter = () => {
+        setCurrentImage(selectedColor.image[0].image2);
+    };
+
+    const handleMouseLeave = () => {
+        setCurrentImage(selectedColor.image[0].image1);
+    };
     return (
         <div className="card-container">
-            <div className="image-container">
+            <div
+                className="image-container"
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}>
                 <img src={currentImage} alt='main' className='main-image' />
-                <img src={APP_IMAGE.favorite} alt='' className='image-button' />
+                <img src={APP_IMAGE.favorite} alt='icon' className='image-button' />
                 <div className="discount-hexagon">
                     <span>{product.sale}%</span>
                 </div>
@@ -27,8 +36,8 @@ const Card = ({ product }) => {
             </div>
             <label>{product.name}</label>
             <div className='price-container'>
-                <div>Giá bán: {product.price}</div>
-                {product.priceOld && <div>Giá gốc: {product.priceOld}</div>}
+                <div className='price'>{product.price}</div>
+                {product.priceOld && <div className='priceOld'> {product.priceOld}</div>}
             </div>
             <div className='color-options'>
                 {product.productSizeColor.map((colorOption, index) => (
@@ -38,7 +47,6 @@ const Card = ({ product }) => {
                         style={{ backgroundColor: colorOption.color }}
                         onClick={() => handleColorChange(colorOption)}
                     >
-                        {colorOption.name}
                     </button>
                 ))}
             </div>

@@ -13,6 +13,9 @@ import image3 from "./image/anh3.jpg";
 import image4 from "./image/anh4.jpg";
 import image5 from "./image/anh5.jpg";
 
+import clothes from "./image/clothes.jpg";
+import accessory from "./image/accessory.jpg";
+
 const APP_IMAGE = {
   //icon
   cart,
@@ -28,6 +31,9 @@ const APP_IMAGE = {
   image3,
   image4,
   image5,
+
+  clothes,
+  accessory,
 };
 
 export default APP_IMAGE;

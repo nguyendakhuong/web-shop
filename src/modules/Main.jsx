@@ -9,19 +9,23 @@ import APP_IMAGE from '../assets'
 const MainWeb = () => {
     const [{ }, dispatch] = useContext(UserContext)
     const navigate = useNavigate()
-    const role = "1"
+    const roleTest = "2"
 
     const HandlerLogin = () => {
         navigate('/login');
+    }
+    const HandlerAdmin = () => {
+        if (roleTest === "1") navigate('/');
+        if (roleTest === "2") navigate('/admin');
     }
     return (
         <div className='layout_web'>
             <div className='header'>
                 <div className='sidebarUser'>
-                    <div>K | F A S H I O N</div>
+                    <div className='logoWeb' onClick={HandlerAdmin}>K | F A S H I O N</div>
                     <SidebarUser sidebarUser={CONFIG_USER_NAV.sidebarUserNav} />
                     <div>
-                        {role === "1" ?
+                        {roleTest === "1" ?
                             <div>
                                 <Button title={"Đăng nhập"} onClick={HandlerLogin} />
                             </div> :

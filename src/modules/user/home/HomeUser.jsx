@@ -3,6 +3,8 @@ import { Fade, Zoom, Slide } from 'react-slideshow-image'
 import './HomeUser.scss'
 import Card from '../../components/card/Card'
 import APP_IMAGE from '../../../assets'
+import CardNews from '../../components/cardNew/CardNews'
+
 const slidesImage = [
     {
         url: "https://file.hstatic.net/200000584505/file/web-pc__1_.jpg"
@@ -42,9 +44,11 @@ const JSON_TEST = [
                 ],
                 "image": [
                     {
-                        "image1": `../../../assets/image/anh1.jpg`,
-                        "image2": "aaaaaaaaaaaaa",
-                        "image3": "aaaaaaaaaaaaa"
+                        "image1": `${APP_IMAGE.image1}`,
+                        "image2": `${APP_IMAGE.image2}`,
+                        "image3": `${APP_IMAGE.image3}`,
+                        "image4": `${APP_IMAGE.image4}`,
+                        "image5": `${APP_IMAGE.image5}`
                     }
                 ]
             },
@@ -57,9 +61,11 @@ const JSON_TEST = [
                 ],
                 "image": [
                     {
-                        "image1": "aaaaaaaaaaaaa",
-                        "image2": "aaaaaaaaaaaaa",
-                        "image3": "aaaaaaaaaaaaa"
+                        "image1": `${APP_IMAGE.image5}`,
+                        "image2": `${APP_IMAGE.image4}`,
+                        "image3": `${APP_IMAGE.image3}`,
+                        "image4": `${APP_IMAGE.image2}`,
+                        "image5": `${APP_IMAGE.image1}`
                     }
                 ]
             }
@@ -84,9 +90,9 @@ const JSON_TEST = [
                 ],
                 "image": [
                     {
-                        "image1": "aaaaaaaaaaaaa",
-                        "image2": "aaaaaaaaaaaaa",
-                        "image3": "aaaaaaaaaaaaa"
+                        "image1": `${APP_IMAGE.image3}`,
+                        "image2": `${APP_IMAGE.image2}`,
+                        "image3": `${APP_IMAGE.image3}`
                     }
                 ]
             },
@@ -99,9 +105,9 @@ const JSON_TEST = [
                 ],
                 "image": [
                     {
-                        "image1": "aaaaaaaaaaaaa",
-                        "image2": "aaaaaaaaaaaaa",
-                        "image3": "aaaaaaaaaaaaa"
+                        "image1": `${APP_IMAGE.image4}`,
+                        "image2": `${APP_IMAGE.image5}`,
+                        "image3": `${APP_IMAGE.image3}`
                     }
                 ]
             }
@@ -112,7 +118,7 @@ const JSON_TEST = [
 
 const HomeUser = () => {
     return (
-        <div>
+        <div className='container'>
             <div className='slide-container'>
                 <Fade>
                     {slidesImage.map((v, i) => (
@@ -124,20 +130,75 @@ const HomeUser = () => {
                     ))}
                 </Fade>
             </div>
-            <div className='textSale'>
-                <h2>END OF SEASON SALE</h2>
-                <div className='hr' />
-                <label>SALE UP TO 70%</label>
-            </div>
-            <div>
-                {
-                    JSON_TEST.map((v, i) => (
-                        <div key={i}>
-                            <Card product={v} />
+            <div className='body-container'>
+                <div className='textSale'>
+                    <h2>END OF SEASON SALE</h2>
+                    <div className='hr' />
+                    <label>SALE UP TO 70%</label>
+                </div>
+                <div className='cardProduct'>
+                    {
+                        JSON_TEST.map((v, i) => (
+                            <div key={i} >
+                                <Card product={v} />
+                            </div>
+                        ))
+                    }
+                </div>
+                <div className='textSale'>
+                    <h2>Sản phẩm mới</h2>
+                    <div className='hr' />
+                    <label>Top trending</label>
+                </div>
+                <div className='cardProduct'>
+                    {
+                        JSON_TEST.map((v, i) => (
+                            <div key={i} >
+                                <Card product={v} />
+                            </div>
+                        ))
+                    }
+                </div>
+                <div className='textSale'>
+                    <h2>Sản phẩm bán chạy</h2>
+                    <button>
+                        BESt SELLER
+                    </button>
+                </div>
+                <div className='cardProduct'>
+                    {
+                        JSON_TEST.map((v, i) => (
+                            <div key={i} >
+                                <Card product={v} />
+                            </div>
+                        ))
+                    }
+                </div>
+
+                <div className='imageNoti'>
+                    <div className='item'>
+                        <div className='image-container'>
+                            <img src={APP_IMAGE.clothes} alt='' />
+                            <div className='overlay-text'>Quần áo</div>
                         </div>
-                    ))
-                }
+                    </div>
+                    <div className='item'>
+                        <div className='image-container'>
+                            <img src={APP_IMAGE.accessory} alt='' />
+                            <div className='overlay-text'>Phụ kiện</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className='textSale'>
+                    <h2>Tin tức mới</h2>
+                    <div className='hr' />
+                </div>
+                <div>
+                    <CardNews />
+                </div>
             </div>
+
         </div>
     )
 }
