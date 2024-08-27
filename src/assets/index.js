@@ -6,6 +6,11 @@ import phone from "./icon/icon-phone.png";
 import email from "./icon/icon-email.png";
 import marker from "./icon/icon-marker-on.png";
 
+import banIcon from "./icon/banIcon.svg";
+import showIcon from "./icon/showIcon.svg";
+import unShowIcon from "./icon/unShowIcon.svg";
+import addIcon from "./icon/add.webp";
+
 // image
 import image1 from "./image/anh1.jpg";
 import image2 from "./image/anh2.jpg";
@@ -24,6 +29,10 @@ const APP_IMAGE = {
   phone,
   email,
   marker,
+  banIcon,
+  showIcon,
+  unShowIcon,
+  addIcon,
 
   //image
   image1,

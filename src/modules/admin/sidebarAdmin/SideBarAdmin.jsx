@@ -4,7 +4,6 @@ import UserContext from "../../../lib/context/use.context"
 import './SideBarAdmin.scss'
 import { KEY_CONTEXT_USER } from "../../../lib/context/use.reducer"
 const SidebarAdmin = ({ sidebarAdmin }) => {
-    console.log(sidebarAdmin)
     const [activeIndex, setAnActiveIndex] = useState(0)
     const location = useLocation()
     const [userCtx, dispatch] = useContext(UserContext)
