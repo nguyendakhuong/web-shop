@@ -4,13 +4,15 @@ import TableComponent from "../../components/table/Table"
 import UserContext from "../../../lib/context/use.context"
 import { KEY_CONTEXT_USER } from "../../../lib/context/use.reducer"
 import APP_IMAGE from "../../../assets"
+import { useNavigate } from "react-router-dom"
 
 const JSON_TEST = [
     {
-        "id": 1,
+        "id": 1, // server tự thêm
+        "msp": "123",
         "name": "Product1",
         "price": 111,
-        "priceOld": 222, // có thể null
+        "priceOld": 222,
         "trademark": "Việt nam",
         "categori": "Ao thun",
         "material": "Len",
@@ -55,6 +57,7 @@ const JSON_TEST = [
 
     }, {
         "id": 2,
+        "msp": "124",
         "name": "Product2",
         "price": 111,
         "priceOld": "", // có thể null
@@ -109,6 +112,9 @@ const ProductAdmin = () => {
     const [currentPage, setCurrentPage] = useState(1)
     const [itemPerPage, setItemPerPage] = useState(10)
     const [filter, setFilter] = useState({})
+    const navigate = useNavigate()
+
+    const [navigateCreate, setNavigateCreate] = useState(false);
 
     const listItem = [
         { name: '', space: 2, label: '' },
@@ -169,9 +175,11 @@ const ProductAdmin = () => {
 
         // console.log("vàp", listChecked)
     }
+    const handleCreate = () => {
+        setNavigateCreate(true)
+    }
     return (
         <div>
-            ProductAdmin\
             <Table
                 labelHeader="Danh sách sản phẩm"
                 listItem={listItem}
@@ -187,6 +195,7 @@ const ProductAdmin = () => {
                 handleSetItemPerPage={handleSetItemPerPage}
                 handleSearch={handleSearch}
                 handleRemoveClick={handleRemoveItem}
+                handleAdd={() => { navigate('/admin/create-product') }}
 
             />
         </div>

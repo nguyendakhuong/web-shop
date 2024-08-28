@@ -11,6 +11,7 @@ import StoreSystem from "../modules/user/storeSystem/StoreSystem";
 import LayoutAdmin from "../modules/admin/layout/LayoutAdmin";
 import Admin from "../modules/admin/home/HomeAdmin";
 import ProductAdmin from "../modules/admin/product/ProductAdmin";
+import CreateProduct from "../modules/admin/product/addProduct/AddProduct";
 
 const AppRoute = (role, isAuth) => {
   const route = [
@@ -57,6 +58,10 @@ const AppRoute = (role, isAuth) => {
         {
           path: "product",
           element: <ProductAdmin />,
+        },
+        {
+          path: "create-product",
+          element: <CreateProduct />,
         },
       ],
     },

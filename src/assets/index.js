@@ -10,6 +10,8 @@ import banIcon from "./icon/banIcon.svg";
 import showIcon from "./icon/showIcon.svg";
 import unShowIcon from "./icon/unShowIcon.svg";
 import addIcon from "./icon/add.webp";
+import iconBack from "./icon/icon-back.png";
+import iconClose from "./icon/close.svg";
 
 // image
 import image1 from "./image/anh1.jpg";
@@ -33,6 +35,8 @@ const APP_IMAGE = {
   showIcon,
   unShowIcon,
   addIcon,
+  iconBack,
+  iconClose,
 
   //image
   image1,
