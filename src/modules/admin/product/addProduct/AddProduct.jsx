@@ -1,9 +1,11 @@
-import { useRef, useState } from "react";
-import './AddProduct.scss'
+import { useState } from "react";
+import './AddProduct.scss';
 import { useNavigate } from "react-router-dom";
 import APP_IMAGE from "../../../../assets";
 import Input from "../../../components/input/Input";
 import CreatableSelect from "react-select/creatable";
+import Modal from 'react-modal';
+import Button from "../../../components/button/Button";
 
 const options = [
     { value: "Túi", label: "Túi" },
@@ -12,10 +14,9 @@ const options = [
 ];
 
 const CreateProduct = () => {
-
-    const navigate = useNavigate()
-    const [originalPrice, setOriginalPrice] = useState("")
-    const [checkBox, setCheckBox] = useState(false)
+    const navigate = useNavigate();
+    const [originalPrice, setOriginalPrice] = useState("");
+    const [checkBox, setCheckBox] = useState(false);
     const [product, setProduct] = useState({
         msp: '',
         name: '',
@@ -34,14 +35,26 @@ const CreateProduct = () => {
         name: '',
         price: '',
         priceOld: '',
-        trademark: '', // nhãn hiệu
+        trademark: '',
         category: [],
-        material: '', //vật liệu
+        material: '',
         sale: '',
         describe: '',
         originalPrice: '',
         productSizeColor: []
     });
+    const [colorProduct, setColorProduct] = useState({
+        colorCode: "",
+        sizeAndAmount: [],
+        imageProduct: []
+    })
+
+
+    const [tabs, setTabs] = useState([]);
+    const [activeTab, setActiveTab] = useState(null);
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [newTabName, setNewTabName] = useState('');
 
     const handleChange = (selectedOption, actionMeta) => {
         const selectedCategories = selectedOption.map(option => option.value);
@@ -50,18 +63,55 @@ const CreateProduct = () => {
             category: selectedCategories
         }));
     };
+
     const handleInputChange = (inputValue, actionMeta) => {
     };
 
     const HandlerInput = () => {
+    };
 
-    }
     const handleBack = () => {
         navigate(-1);
-    }
+    };
+
     const handleCheckBox = () => {
         setCheckBox(!checkBox);
+    };
+
+    const handleTabClick = (id) => {
+        setActiveTab(id);
+    };
+
+    const handleCreateTab = () => {
+        if (newTabName.trim() !== '') {
+            const newTab = {
+                id: tabs.length + 1, // Tạo ID cho tab mới
+                name: newTabName,
+                fields: {
+                    color: '',
+                    size: '',
+                }
+            };
+            setTabs([...tabs, newTab]);
+            setActiveTab(newTab.id);
+            setNewTabName('');
+            setIsModalOpen(false);
+        }
+
+    };
+
+    const handleAddTab = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(!isModalOpen)
     }
+
+    const HandlerColorInput = () => {
+
+    }
+
     return (
         <div>
             <div className="header-createProduct">
@@ -177,13 +227,84 @@ const CreateProduct = () => {
 
                     <div className="colorProduct">
                         <div>
-
+                            Màu sản phẩm
                         </div>
                     </div>
+
+                    <div className="tab-buttons">
+                        {tabs.map((tab) => (
+                            <button
+                                key={tab.id}
+                                onClick={() => handleTabClick(tab.id)}
+                                className={activeTab === tab.id ? 'active' : ''}
+                            >
+                                {tab.name}
+                            </button>
+                        ))}
+                        <button onClick={handleAddTab} className="add-tab">
+                            + Thêm màu
+                        </button>
+                    </div>
+                    <div className="tab-content">
+                        {tabs.map((tab) => (
+                            activeTab === tab.id && (
+                                <div key={tab.id}>
+                                    <h3>Tên màu : {tab.name}</h3>
+                                    <div>
+                                        <div>
+                                            <Input
+                                                label={"Mã màu"}
+                                                placeholder={"#..."}
+                                                onChange={HandlerColorInput}
+                                                name={"colorCode"}
+                                                required={true}
+                                                validate={'required'}
+                                                value={colorProduct.colorCode}
+                                                errorText={listError.colorCode}
+                                                type={'text'} />
+                                        </div>
+                                        <div>
+                                            <Input
+                                                label={"Size và Số lượng"}
+                                                placeholder={"Size:Amount ..."}
+                                                onChange={HandlerColorInput}
+                                                name={"sizeAndAmount"}
+                                                required={true}
+                                                validate={'required'}
+                                                value={colorProduct.sizeAndAmount}
+                                                errorText={listError.sizeAndAmount}
+                                                type={'text'} />
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        ))}
+                    </div>
+
+                    <Modal
+                        isOpen={isModalOpen}
+                        onRequestClose={handleCloseModal}
+                        contentLabel="Thêm màu"
+                    >
+                        <div className="modal-color">
+                            <h2>Thêm màu mới !</h2>
+                            <div>
+                                <Input
+                                    label={"Tên màu"}
+                                    type="text"
+                                    value={newTabName}
+                                    onChange={(e) => setNewTabName(e.target.value)}
+                                />
+                            </div>
+                            <Button onClick={handleCreateTab} title={"Save"} />
+                            <Button onClick={handleCloseModal} title={"Cancel"} />
+                        </div>
+                    </Modal>
 
                 </form>
             </div>
         </div>
     )
 }
-export default CreateProduct
+
+export default CreateProduct;

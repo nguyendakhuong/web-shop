@@ -13,6 +13,8 @@ import addIcon from "./icon/add.webp";
 import iconBack from "./icon/icon-back.png";
 import iconClose from "./icon/close.svg";
 
+import iconDelete from "./icon/deleteModal.svg";
+
 // image
 import image1 from "./image/anh1.jpg";
 import image2 from "./image/anh2.jpg";
@@ -37,6 +39,7 @@ const APP_IMAGE = {
   addIcon,
   iconBack,
   iconClose,
+  iconDelete,
 
   //image
   image1,
