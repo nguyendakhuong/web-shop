@@ -6,6 +6,8 @@ import Input from "../../../components/input/Input";
 import CreatableSelect from "react-select/creatable";
 import Modal from 'react-modal';
 import Button from "../../../components/button/Button";
+import { ParseValid } from "../../../../lib/validate/ParseValid";
+import { Validate } from "../../../../lib/validate/Validate";
 
 const options = [
     { value: "Túi", label: "Túi" },
@@ -18,13 +20,13 @@ const CreateProduct = () => {
     const [isDragging, setIsDragging] = useState(false)
     const fileInputRef = useRef()
     const [images, setImages] = useState([])
-    const [originalPrice, setOriginalPrice] = useState("");
     const [checkBox, setCheckBox] = useState(false);
+    const [isButtonDisabled, setIsButtonDisabled] = useState(true);
     const [product, setProduct] = useState({
         msp: '',
         name: '',
         price: '',
-        priceOld: '',
+        originalPrice: '',
         trademark: '',
         category: [],
         material: '',
@@ -37,13 +39,12 @@ const CreateProduct = () => {
         msp: '',
         name: '',
         price: '',
-        priceOld: '',
+        originalPrice: '',
         trademark: '',
         category: [],
         material: '',
         sale: '',
         describe: '',
-        originalPrice: '',
         productSizeColor: []
     });
     const [colorProduct, setColorProduct] = useState({
@@ -58,6 +59,17 @@ const CreateProduct = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [newTabName, setNewTabName] = useState('');
 
+    const formatter = new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND'
+    })
+
+    const formatNumber = (number) => {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    };
+
+
+
     const handleChange = (selectedOption, actionMeta) => {
         const selectedCategories = selectedOption.map(option => option.value);
         setProduct(prevProduct => ({
@@ -69,7 +81,38 @@ const CreateProduct = () => {
     const handleInputChange = (inputValue, actionMeta) => {
     };
 
-    const HandlerInput = () => {
+    const HandlerInput = (e) => {
+        const { name, value } = e.target;
+
+        if (name === 'originalPrice') {
+            const cleanedValue = value.replace(/\./g, '');
+            const formattedValue = cleanedValue.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            setProduct({ ...product, [name]: cleanedValue });
+            e.target.value = formattedValue;
+        } else {
+            setProduct({ ...product, [name]: value });
+        }
+        const inputValue = value.trim();
+        const valid = e.target.getAttribute('validate');
+        const validObject = ParseValid(valid);
+
+        const error = Validate(
+            name,
+            inputValue,
+            validObject,
+            product.price,
+            product.priceSale,
+            product.priceOld
+        );
+
+        const newListError = { ...listError, [name]: error };
+        setListError(newListError);
+
+        if (Object.values(newListError).some((i) => i)) {
+            setIsButtonDisabled(true);
+        } else {
+            setIsButtonDisabled(false);
+        }
     };
 
     const handleBack = () => {
@@ -166,6 +209,9 @@ const CreateProduct = () => {
             }
         }
     }
+    const handleBtnCreateProduct = () => {
+        console.log(product)
+    }
 
     return (
         <div>
@@ -182,7 +228,7 @@ const CreateProduct = () => {
                                 label={"Mã sản phẩm"}
                                 placeholder={"Mã ..."}
                                 onChange={HandlerInput}
-                                name={"email"}
+                                name={"msp"}
                                 required={true}
                                 validate={'required'}
                                 value={product.msp}
@@ -221,9 +267,9 @@ const CreateProduct = () => {
                                 name={"originalPrice"}
                                 required={true}
                                 validate={'required'}
-                                value={originalPrice}
+                                value={formatNumber(product.originalPrice)}
                                 errorText={listError.originalPrice}
-                                type={'number'} />
+                                type={'text'} />
                             <div className="checkbox">
                                 <input type="checkbox" onChange={handleCheckBox} />
                                 <label>Áp dụng giảm giá</label>
@@ -239,14 +285,14 @@ const CreateProduct = () => {
                                     name={"sale"}
                                     value={product.sale}
                                     errorText={listError.sale}
-                                    type={'number'} />
+                                    type={'text'} />
 
                                 <div className="detailedPrice">
                                     <div>
-                                        Giá ban đầu : {originalPrice}
+                                        Giá ban đầu :{formatter.format(product.originalPrice)}
                                     </div>
                                     <div>
-                                        Giá bán sau khi giảm : {originalPrice * product.sale / 100}
+                                        Giá bán sau khi giảm :  {formatter.format(Math.round(product.originalPrice * (1 - product.sale / 100)))}
                                     </div>
                                 </div>
                             </div>
@@ -304,8 +350,9 @@ const CreateProduct = () => {
                         {tabs.map((tab) => (
                             activeTab === tab.id && (
                                 <div key={tab.id} className="tab">
-                                    <h3>Tên màu : {tab.name}</h3>
+
                                     <div className="tab-color">
+                                        <h3>Tên màu : {tab.name}</h3>
                                         <div className="item">
                                             <Input
                                                 label={"Mã màu"}
@@ -318,7 +365,7 @@ const CreateProduct = () => {
                                                 errorText={listError.colorCode}
                                                 type={'text'} />
                                         </div>
-                                        <div className="item2">
+                                        <div className="item">
                                             <Input
                                                 label={"Size và Số lượng"}
                                                 placeholder={"Size:Amount ..."}
@@ -387,6 +434,10 @@ const CreateProduct = () => {
                             <Button onClick={handleCloseModal} title={"Cancel"} />
                         </div>
                     </Modal>
+
+                    <div>
+                        <Button title={"Xác nhận"} onClick={handleBtnCreateProduct} />
+                    </div>
 
                 </form>
             </div>
