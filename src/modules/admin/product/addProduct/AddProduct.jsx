@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import './AddProduct.scss';
 import { useNavigate } from "react-router-dom";
 import APP_IMAGE from "../../../../assets";
@@ -15,6 +15,9 @@ const options = [
 
 const CreateProduct = () => {
     const navigate = useNavigate();
+    const [isDragging, setIsDragging] = useState(false)
+    const fileInputRef = useRef()
+    const [images, setImages] = useState([])
     const [originalPrice, setOriginalPrice] = useState("");
     const [checkBox, setCheckBox] = useState(false);
     const [product, setProduct] = useState({
@@ -49,7 +52,6 @@ const CreateProduct = () => {
         imageProduct: []
     })
 
-
     const [tabs, setTabs] = useState([]);
     const [activeTab, setActiveTab] = useState(null);
 
@@ -82,6 +84,29 @@ const CreateProduct = () => {
         setActiveTab(id);
     };
 
+    const fileRemove = file => {
+        setImages((prevImages) =>
+            prevImages.filter((_, i) => i !== file)
+        )
+    }
+    const handleFileChange = (e) => {
+        console.log("a")
+        const file = e.target.files
+        if (file.length === 0) return
+        for (let i = 0; i < file.length; i++) {
+            if (file[i].type.split('/')[0] !== "image") continue;
+            if (!images.some((e) => e.name === file[i].name)) {
+                setImages((prevImages) => [
+                    ...prevImages,
+                    {
+                        name: file[i].name,
+                        url: URL.createObjectURL(file[i])
+                    }
+                ])
+            }
+        }
+    }
+
     const handleCreateTab = () => {
         if (newTabName.trim() !== '') {
             const newTab = {
@@ -110,6 +135,36 @@ const CreateProduct = () => {
 
     const HandlerColorInput = () => {
 
+    }
+    const selectFile = () => {
+        fileInputRef.current.click()
+    }
+    const onDragOver = (e) => {
+        e.preventDefault();
+        setIsDragging(true)
+        e.dataTransfer.dropEffect = "copy"
+    }
+    const onDragLeave = (e) => {
+        e.preventDefault();
+        setIsDragging(false)
+
+    }
+    const onDrop = (e) => {
+        e.preventDefault();
+        setIsDragging(false)
+        const file = e.dataTransfer.files;
+        for (let i = 0; i < file.length; i++) {
+            if (file[i].type.split('/')[0] !== "image") continue;
+            if (!images.some((e) => e.name === file[i].name)) {
+                setImages((prevImages) => [
+                    ...prevImages,
+                    {
+                        name: file[i].name,
+                        url: URL.createObjectURL([file[i]])
+                    }
+                ])
+            }
+        }
     }
 
     return (
@@ -248,10 +303,10 @@ const CreateProduct = () => {
                     <div className="tab-content">
                         {tabs.map((tab) => (
                             activeTab === tab.id && (
-                                <div key={tab.id}>
+                                <div key={tab.id} className="tab">
                                     <h3>Tên màu : {tab.name}</h3>
-                                    <div>
-                                        <div>
+                                    <div className="tab-color">
+                                        <div className="item">
                                             <Input
                                                 label={"Mã màu"}
                                                 placeholder={"#..."}
@@ -263,7 +318,7 @@ const CreateProduct = () => {
                                                 errorText={listError.colorCode}
                                                 type={'text'} />
                                         </div>
-                                        <div>
+                                        <div className="item2">
                                             <Input
                                                 label={"Size và Số lượng"}
                                                 placeholder={"Size:Amount ..."}
@@ -274,6 +329,38 @@ const CreateProduct = () => {
                                                 value={colorProduct.sizeAndAmount}
                                                 errorText={listError.sizeAndAmount}
                                                 type={'text'} />
+                                        </div>
+                                    </div>
+                                    <div className="card">
+                                        <div className="top">
+                                            <p>Chọn ảnh hoặc kéo ảnh</p>
+                                        </div>
+                                        <div className="drag-area" onDragOver={onDragOver} onDragLeave={onDragLeave} onDrop={onDrop}>
+                                            {
+                                                isDragging ? (
+                                                    <span className="select">
+                                                        Drop images here
+                                                    </span>
+
+                                                ) : (
+                                                    <>
+                                                        Drag & Drop image here or {" "}
+                                                        <span className="select" onClick={selectFile}>
+                                                            Browse
+                                                        </span>
+                                                    </>
+                                                )
+                                            }
+                                            <input name="file" type="file" className="file" multiple ref={fileInputRef} onChange={handleFileChange} />
+
+                                        </div>
+                                        <div className="container">
+                                            {images.map((images, index) => (
+                                                <div className="image" key={index}>
+                                                    <span className="delete" onClick={() => { fileRemove(index) }}>x</span>
+                                                    <img src={images.url} alt={images.name} />
+                                                </div>
+                                            ))}
                                         </div>
                                     </div>
                                 </div>
