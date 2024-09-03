@@ -15,7 +15,8 @@ export const ERROR_CHECK_LIST_TYPE = {
   checkPrice: "Giá giảm phải nhỏ hơn giá gốc",
   checkNegative: "Không được nhỏ hơn hoặc bằng 0",
   checkTimeEnd: "Ngày kết thúc không được nhỏ hơn ngày bắt đầu",
-  regexSizeAndQuantity: "Size(30-45) : Quantity(1-500)",
-  checkRegexSize: "Không đúng định dạng size:quantity",
+  regexSizeAndQuantity: "Size(30-45|S|M|L|XL|XXL) : amount(1-1000)",
+  checkRegexSize: "Không đúng định dạng size:amount",
   checkSize: "Các giá trị Size không được trùng lặp",
+  checkCodeColor: "Không đúng định dạng mã màu",
 };

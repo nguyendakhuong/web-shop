@@ -18,7 +18,7 @@
 }
 .form-createProduct {
   padding: 10px;
-  min-height: 500px;
+  min-height: 50rem;
   .nameProduct {
     display: flex;
     gap: 10px;
@@ -71,12 +71,15 @@
     }
   }
   .colorProduct {
+    h3 {
+      margin: 10px 0px;
+    }
     img {
       width: 24px;
     }
   }
   .modal-color {
-    width: 100px;
+    width: 10rem;
     background-color: red;
   }
   .tab-buttons {
@@ -84,43 +87,67 @@
     margin-bottom: 10px;
   }
 
-  .tab-buttons button {
-    padding: 10px 20px;
-    margin-right: 5px;
-    border: none;
-    cursor: pointer;
-    background-color: #f1f1f1;
+  .tab-item {
+    position: relative;
+    display: inline-block;
+    margin-right: 10px;
+    // background-color: #f1f1f1;
+    border-radius: 5px;
+    // padding: 5px 10px;
   }
 
-  .tab-buttons button.active {
+  .tab-item .delete-tab {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    cursor: pointer;
+  }
+  .tab-buttons button {
+    padding: 10px 2rem;
+    margin: 0px 5px;
+    border: none;
+    cursor: pointer;
+    // background-color: #f1f1f1;
+    border-radius: 5px;
+  }
+
+  .tab-buttons .tab-item.active {
     background-color: #6200ea;
     color: white;
+    border-radius: 5px;
   }
 
   .tab-buttons .add-tab {
     background-color: #4caf50;
     color: white;
+    border-radius: 5px;
   }
 
   .tab-content {
-    padding: 20px;
     border-radius: 5px;
-    border: 1px solid black;
+
     min-height: none;
     .tab-color {
       flex: 1;
       display: flex;
       flex-direction: column;
       gap: 20px;
-      // max-width: 35rem;
       max-height: 20rem;
       .item {
         flex: 1;
       }
     }
   }
-
-  /* Modal styling */
   .ReactModal__Overlay {
     background-color: rgba(0, 0, 0, 0.75);
   }
@@ -132,7 +159,7 @@
     bottom: auto;
     margin-right: -50%;
     transform: translate(-50%, -50%);
-    padding: 20px;
+    padding: 2rem;
     border-radius: 8px;
     background-color: white;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
@@ -141,7 +168,11 @@
 
 .tab {
   display: flex;
-  gap: 20px;
+  gap: 2rem;
+  border: 1px solid black;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
 
   .card {
     // max-width: 35rem;
@@ -205,15 +236,15 @@
     justify-content: flex-start;
     align-items: flex-start;
     flex-wrap: wrap;
-    max-height: 200px;
+    max-height: 20rem;
     overflow-y: auto;
     margin-top: 10px;
   }
 
   .card .container .image {
-    width: 75px;
+    width: 7.5rem;
     margin-right: 5px;
-    height: 75px;
+    height: 7.5rem;
     position: relative;
     margin-bottom: 8px;
   }
@@ -226,7 +257,7 @@
     position: absolute;
     top: -2px;
     right: 9px;
-    font-size: 20px;
+    font-size: 2rem;
     cursor: pointer;
   }
 
@@ -240,4 +271,9 @@
     z-index: 999;
     color: #0086fe;
   }
+}
+.btn-confirm {
+  display: flex;
+  justify-content: end;
+  margin-right: 2rem;
 }

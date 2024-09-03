@@ -41,17 +41,19 @@ const CreateProduct = () => {
         price: '',
         originalPrice: '',
         trademark: '',
-        category: [],
         material: '',
         sale: '',
         describe: '',
-        productSizeColor: []
+        sizeAndAmount: '',
+        colorCode: ''
     });
+
     const [colorProduct, setColorProduct] = useState({
         colorCode: "",
         sizeAndAmount: [],
         imageProduct: []
     })
+
 
     const [tabs, setTabs] = useState([]);
     const [activeTab, setActiveTab] = useState(null);
@@ -66,6 +68,15 @@ const CreateProduct = () => {
 
     const formatNumber = (number) => {
         return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    };
+    const currentTab = tabs.find(tab => tab.id === activeTab) || {};
+
+    const handleTabDataChange = (id, field, value) => {
+        setTabs(prevTabs =>
+            prevTabs.map(tab =>
+                tab.id === id ? { ...tab, [field]: value } : tab
+            )
+        );
     };
 
 
@@ -132,23 +143,41 @@ const CreateProduct = () => {
             prevImages.filter((_, i) => i !== file)
         )
     }
+
     const handleFileChange = (e) => {
-        console.log("a")
-        const file = e.target.files
-        if (file.length === 0) return
-        for (let i = 0; i < file.length; i++) {
-            if (file[i].type.split('/')[0] !== "image") continue;
-            if (!images.some((e) => e.name === file[i].name)) {
-                setImages((prevImages) => [
-                    ...prevImages,
-                    {
-                        name: file[i].name,
-                        url: URL.createObjectURL(file[i])
-                    }
-                ])
+        const files = e.target.files;
+        if (files.length === 0) return;
+
+        const maxImages = 5;
+        const currentImages = currentTab.imageProduct || [];
+        if (currentImages.length >= maxImages) return;
+
+        const remainingSlots = maxImages - currentImages.length;
+        const newImages = [];
+
+        for (let i = 0; i < files.length && i < remainingSlots; i++) {
+            if (files[i].type.split('/')[0] !== 'image') continue;
+
+            const imageExists = currentImages.some(img => img.name === files[i].name);
+            if (!imageExists) {
+                newImages.push({
+                    name: files[i].name,
+                    url: URL.createObjectURL(files[i])
+                });
             }
         }
-    }
+
+        if (newImages.length > 0) {
+            setTabs(prevTabs =>
+                prevTabs.map(tab =>
+                    tab.id === activeTab ? { ...tab, imageProduct: [...currentImages, ...newImages] } : tab
+                )
+            );
+        }
+    };
+
+
+
 
     const handleCreateTab = () => {
         if (newTabName.trim() !== '') {
@@ -175,9 +204,42 @@ const CreateProduct = () => {
     const handleCloseModal = () => {
         setIsModalOpen(!isModalOpen)
     }
+    const handleColorChange = (e) => {
+        const { name, value } = e.target;
+        handleTabDataChange(activeTab, name, value);
+        const inputValue = value.trim();
+        // setColorProduct({ ...colorProduct, [name]: inputValue })
+        const valid = e.target.getAttribute('validate');
+        const validObject = ParseValid(valid);
+        const error = Validate(
+            name,
+            inputValue,
+            validObject,
+        );
 
-    const HandlerColorInput = () => {
+        const newListError = { ...listError, [name]: error };
+        setListError(newListError);
+    };
+    const HandlerColorInput = (e) => {
+        const { name, value } = e.target;
+        const inputValue = value.trim();
+        setColorProduct({ ...colorProduct, [name]: inputValue })
+        const valid = e.target.getAttribute('validate');
+        const validObject = ParseValid(valid);
+        const error = Validate(
+            name,
+            inputValue,
+            validObject,
+        );
 
+        const newListError = { ...listError, [name]: error };
+        setListError(newListError);
+
+        if (Object.values(newListError).some((i) => i)) {
+            setIsButtonDisabled(true);
+        } else {
+            setIsButtonDisabled(false);
+        }
     }
     const selectFile = () => {
         fileInputRef.current.click()
@@ -195,24 +257,45 @@ const CreateProduct = () => {
     const onDrop = (e) => {
         e.preventDefault();
         setIsDragging(false)
-        const file = e.dataTransfer.files;
-        for (let i = 0; i < file.length; i++) {
-            if (file[i].type.split('/')[0] !== "image") continue;
-            if (!images.some((e) => e.name === file[i].name)) {
-                setImages((prevImages) => [
-                    ...prevImages,
-                    {
-                        name: file[i].name,
-                        url: URL.createObjectURL([file[i]])
-                    }
-                ])
+        const files = e.dataTransfer.files;
+        if (files.length === 0) return;
+        const maxImages = 5;
+        const currentImages = colorProduct.imageProduct;
+        if (currentImages.length >= maxImages) return;
+        const remainingSlots = maxImages - currentImages.length;
+        const newImages = [];
+
+        for (let i = 0; i < files.length && i < remainingSlots; i++) {
+            if (files[i].type.split('/')[0] !== 'image') continue;
+            if (!currentImages.some((e) => e.name === files[i].name)) {
+                newImages.push({
+                    name: files[i].name,
+                    url: URL.createObjectURL(files[i])
+                });
             }
         }
+        if (newImages.length > 0) {
+            setColorProduct(prevColorProduct => ({
+                ...prevColorProduct,
+                imageProduct: [
+                    ...prevColorProduct.imageProduct,
+                    ...newImages
+                ]
+            }));
+        }
     }
+    const handleDeleteTab = (id) => {
+        setTabs((prevTabs) => prevTabs.filter(tab => tab.id !== id));
+        if (activeTab === id) {
+            setActiveTab(null);
+        }
+    };
+
     const handleBtnCreateProduct = () => {
         console.log(product)
+        console.log(colorProduct)
+        console.log(tabs)
     }
-
     return (
         <div>
             <div className="header-createProduct">
@@ -242,7 +325,7 @@ const CreateProduct = () => {
                                 onChange={HandlerInput}
                                 name={"name"}
                                 required={true}
-                                validate={'required|maxlength:20'}
+                                validate={'required||maxLength:20'}
                                 value={product.name}
                                 errorText={listError.name}
                                 type={'text'} />
@@ -282,6 +365,7 @@ const CreateProduct = () => {
                                     label={"Phần trăm giảm giá"}
                                     placeholder={"Số ..."}
                                     onChange={HandlerInput}
+                                    validate={'checkNumber|min:1|max:99'}
                                     name={"sale"}
                                     value={product.sale}
                                     errorText={listError.sale}
@@ -327,53 +411,58 @@ const CreateProduct = () => {
                     </div>
 
                     <div className="colorProduct">
-                        <div>
+                        <h3>
                             Màu sản phẩm
-                        </div>
+                        </h3>
                     </div>
 
                     <div className="tab-buttons">
-                        {tabs.map((tab) => (
-                            <button
-                                key={tab.id}
-                                onClick={() => handleTabClick(tab.id)}
-                                className={activeTab === tab.id ? 'active' : ''}
-                            >
-                                {tab.name}
-                            </button>
-                        ))}
                         <button onClick={handleAddTab} className="add-tab">
                             + Thêm màu
                         </button>
+                        {tabs.map((tab) => (
+                            <div key={tab.id} className={`tab-item ${activeTab === tab.id ? 'active' : ''}`}>
+                                <button onClick={() => handleTabClick(tab.id)} className="btn-tab">
+                                    {tab.name}
+                                </button>
+                                <label onClick={() => handleDeleteTab(tab.id)} className="delete-tab">
+                                    X
+                                </label>
+                            </div>
+                        ))}
                     </div>
                     <div className="tab-content">
                         {tabs.map((tab) => (
                             activeTab === tab.id && (
                                 <div key={tab.id} className="tab">
-
                                     <div className="tab-color">
                                         <h3>Tên màu : {tab.name}</h3>
                                         <div className="item">
                                             <Input
                                                 label={"Mã màu"}
                                                 placeholder={"#..."}
-                                                onChange={HandlerColorInput}
+                                                onChange={handleColorChange}
                                                 name={"colorCode"}
                                                 required={true}
-                                                validate={'required'}
-                                                value={colorProduct.colorCode}
+                                                validate={'required|checkCodeColor'}
+                                                value={currentTab.colorCode || ''}
                                                 errorText={listError.colorCode}
                                                 type={'text'} />
+                                            <div
+                                                style={{
+                                                    backgroundColor: currentTab.colorCode || 'transparent', width: '20px', height: '20px', border: '1px solid #000',
+                                                }}
+                                            />
                                         </div>
                                         <div className="item">
                                             <Input
                                                 label={"Size và Số lượng"}
                                                 placeholder={"Size:Amount ..."}
-                                                onChange={HandlerColorInput}
+                                                onChange={handleColorChange}
                                                 name={"sizeAndAmount"}
                                                 required={true}
-                                                validate={'required'}
-                                                value={colorProduct.sizeAndAmount}
+                                                validate={'required|regexSizeAndQuantity|checkRegexSize|checkSize'}
+                                                value={currentTab.sizeAndAmount || ''}
                                                 errorText={listError.sizeAndAmount}
                                                 type={'text'} />
                                         </div>
@@ -402,7 +491,7 @@ const CreateProduct = () => {
 
                                         </div>
                                         <div className="container">
-                                            {images.map((images, index) => (
+                                            {currentTab.imageProduct && currentTab.imageProduct.map((images, index) => (
                                                 <div className="image" key={index}>
                                                     <span className="delete" onClick={() => { fileRemove(index) }}>x</span>
                                                     <img src={images.url} alt={images.name} />
@@ -435,7 +524,7 @@ const CreateProduct = () => {
                         </div>
                     </Modal>
 
-                    <div>
+                    <div className="btn-confirm">
                         <Button title={"Xác nhận"} onClick={handleBtnCreateProduct} />
                     </div>
 
