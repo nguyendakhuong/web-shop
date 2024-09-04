@@ -69,15 +69,7 @@ const CreateProduct = () => {
     const formatNumber = (number) => {
         return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     };
-    const currentTab = tabs.find(tab => tab.id === activeTab) || {};
 
-    const handleTabDataChange = (id, field, value) => {
-        setTabs(prevTabs =>
-            prevTabs.map(tab =>
-                tab.id === id ? { ...tab, [field]: value } : tab
-            )
-        );
-    };
 
 
 
@@ -177,24 +169,45 @@ const CreateProduct = () => {
     };
 
 
+    const currentTab = tabs.find(tab => tab.id === activeTab) || {};
 
+    const handleTabDataChange = (id, field, value) => {
+        console.log(field)
+        setTabs(prevTabs =>
+            prevTabs.map(tab =>
+                tab.id === id ? { ...tab, [field]: value } : tab
+            )
+        );
+    };
 
     const handleCreateTab = () => {
         if (newTabName.trim() !== '') {
+            console.log(tabs)
             const newTab = {
-                id: tabs.length + 1, // Tạo ID cho tab mới
+                id: tabs.length + 1,
                 name: newTabName,
-                fields: {
-                    color: '',
-                    size: '',
-                }
             };
             setTabs([...tabs, newTab]);
             setActiveTab(newTab.id);
             setNewTabName('');
             setIsModalOpen(false);
         }
+    };
 
+    const handleColorChange = (e) => {
+        const { name, value } = e.target;
+        handleTabDataChange(activeTab, name, value);
+        const inputValue = value.trim();
+        const valid = e.target.getAttribute('validate');
+        const validObject = ParseValid(valid);
+        const error = Validate(
+            name,
+            inputValue,
+            validObject,
+        );
+
+        const newListError = { ...listError, [name]: error };
+        setListError(newListError);
     };
 
     const handleAddTab = () => {
@@ -204,43 +217,7 @@ const CreateProduct = () => {
     const handleCloseModal = () => {
         setIsModalOpen(!isModalOpen)
     }
-    const handleColorChange = (e) => {
-        const { name, value } = e.target;
-        handleTabDataChange(activeTab, name, value);
-        const inputValue = value.trim();
-        // setColorProduct({ ...colorProduct, [name]: inputValue })
-        const valid = e.target.getAttribute('validate');
-        const validObject = ParseValid(valid);
-        const error = Validate(
-            name,
-            inputValue,
-            validObject,
-        );
 
-        const newListError = { ...listError, [name]: error };
-        setListError(newListError);
-    };
-    const HandlerColorInput = (e) => {
-        const { name, value } = e.target;
-        const inputValue = value.trim();
-        setColorProduct({ ...colorProduct, [name]: inputValue })
-        const valid = e.target.getAttribute('validate');
-        const validObject = ParseValid(valid);
-        const error = Validate(
-            name,
-            inputValue,
-            validObject,
-        );
-
-        const newListError = { ...listError, [name]: error };
-        setListError(newListError);
-
-        if (Object.values(newListError).some((i) => i)) {
-            setIsButtonDisabled(true);
-        } else {
-            setIsButtonDisabled(false);
-        }
-    }
     const selectFile = () => {
         fileInputRef.current.click()
     }
@@ -292,9 +269,42 @@ const CreateProduct = () => {
     };
 
     const handleBtnCreateProduct = () => {
+        const productSizeColor = tabs.map(tab => {
+            const { name, colorCode, imageProduct, sizeAndAmount } = tab;
+
+            // Convert sizeAndAmount string to an array of objects
+            const sizes = sizeAndAmount.split(',').map(pair => {
+                const [size, amount] = pair.split(':').map(part => part.trim());
+                return { [size]: parseInt(amount, 10) };
+            });
+
+            return {
+                name,
+                colorCode,
+                imageProduct,
+                sizes
+            };
+        });
+        setProduct(prevProduct => ({
+            ...prevProduct,
+            productSizeColor
+        }));
+        if (checkBox && product.sale > 0) {
+            setProduct(prevProduct => ({
+                ...prevProduct,
+                price: Math.round(prevProduct.originalPrice * (1 - prevProduct.sale / 100))
+            }));
+        }
+        if (!checkBox) {
+            setProduct(prevProduct => ({
+                ...prevProduct,
+                price: prevProduct.originalPrice
+            }));
+        }
+
         console.log(product)
-        console.log(colorProduct)
         console.log(tabs)
+
     }
     return (
         <div>
